@@ -1,0 +1,30 @@
+name: Deploy Database Schema
+
+on:
+  push:
+    branches:
+      - master # Команда будет запускаться при пуше в ветку main
+  workflow_dispatch: # Позволяет запускать процесс вручную кнопкой
+
+jobs:
+  db-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # или ваша версия node
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Push Schema to Prisma Postgres
+        run: npx prisma db push
+        env:
+          # GitHub подставит секрет из настроек в переменную окружения
+          DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
