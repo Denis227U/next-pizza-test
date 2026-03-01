@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/lib/utils';
 import { Container } from './container';
 import { Categories } from './categories';
@@ -8,15 +6,15 @@ import { SortPopup } from './sort-popup';
 const CATEGORIES = [
   {
     id: 0,
-    name: 'Пиццы',
-  },
-  {
-    id: 1,
     name: 'Комбо',
   },
   {
+    id: 1,
+    name: 'Пиццы',
+  },
+  {
     id: 2,
-    name: 'Закуски',
+    name: 'Завтрак',
   },
   {
     id: 3,

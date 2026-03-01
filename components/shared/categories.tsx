@@ -1,5 +1,7 @@
+'use client';
+
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useCategoryStore } from '@/store/category';
 
 interface Category {
   id: number;
@@ -12,7 +14,9 @@ interface Props {
 }
 
 export const Categories: React.FC<Props> = ({ className, items }) => {
-  const [categoryActiveId, setCategoryActiveId] = useState(items[0].id);
+  const categoryActiveId = useCategoryStore((state) => state.activeId);
+  // const setCategoryActiveId = useCategoryStore((state) => state.setActiveId);
+  // const [categoryActiveId, setCategoryActiveId] = useState(items[0].id);
 
   return (
     <div
@@ -27,11 +31,11 @@ export const Categories: React.FC<Props> = ({ className, items }) => {
           )}
           href={`/#${name}`}
           key={index}
-          onClick={(e) => {
-            e.preventDefault();
+          // onClick={(e) => {
+          //   e.preventDefault();
 
-            setCategoryActiveId(id);
-          }}
+          //   setCategoryActiveId(id);
+          // }}
         >
           <button>{name}</button>
         </a>
