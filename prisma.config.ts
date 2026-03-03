@@ -7,7 +7,6 @@ export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
-    seed: 'npx tsx ./prisma/seed.ts',
   },
   datasource: {
     // В Prisma 7 это поле заменяет и url, и directUrl для миграций
