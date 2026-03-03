@@ -3,13 +3,17 @@ import { Filters } from '@/components/shared/filters';
 import { ProductsGroupList } from '@/components/shared/products-group-list';
 import { Title } from '@/components/shared/Title';
 import { TopBar } from '@/components/shared/top-bar';
+import DeleteForm from './delete-user';
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <Container className="mt-10">
         <Title text="Все пиццы" size="lg" className="font-extrabold" />
       </Container>
+
+      {/* нужна т.к. это единственный способ удалить юзера для меня */}
+      <DeleteForm />
 
       <TopBar />
 
