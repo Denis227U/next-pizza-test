@@ -6,11 +6,11 @@ import { defineConfig, env } from 'prisma/config';
 export default defineConfig({
   schema: 'prisma/schema.prisma',
 
-  seed: 'npx tsx prisma/seed.ts',
-
   migrations: {
     path: 'prisma/migrations',
+    seed: 'npx tsx prisma/seed.ts',
   },
+
   datasource: {
     // В Prisma 7 это поле заменяет и url, и directUrl для миграций
     url: env('DATABASE_URL'),

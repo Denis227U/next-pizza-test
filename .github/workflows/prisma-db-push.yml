@@ -23,18 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Push Schema to Prisma Postgres
-        run: npx prisma db push --accept-data-loss
-        env:
-          # GitHub подставит секрет из настроек в переменную окружения
-          DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
+      - name: Sync and Generate
+        run: |
+          npx prisma db push --accept-data-loss
+          npx prisma generate
         env:
           DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
 
       - name: Seed Database
-        run: npx prisma db seed
+        run: npx tsx prisma/seed.ts
         env:
           DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
