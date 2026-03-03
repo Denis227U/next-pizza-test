@@ -1,7 +1,11 @@
 import 'dotenv/config';
-import { UserRole } from '../app/generated/prisma/enums';
 import { PrismaClient } from '../app/generated/prisma/client';
 import { hashSync } from 'bcrypt';
+
+export const UserRole = {
+  USER: 'USER',
+  ADMIN: 'ADMIN',
+} as const;
 
 const prisma = new PrismaClient();
 
