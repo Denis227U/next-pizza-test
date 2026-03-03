@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Push Schema to Prisma Postgres
-        run: npx prisma db push
+        run: npx prisma db push --accept-data-loss
         env:
           # GitHub подставит секрет из настроек в переменную окружения
           DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
