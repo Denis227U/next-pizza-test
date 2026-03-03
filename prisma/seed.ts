@@ -7,7 +7,17 @@ export const UserRole = {
   ADMIN: 'ADMIN',
 } as const;
 
-const prisma = new PrismaClient();
+// В Prisma 7 для этого типа клиента
+// нужно передавать адаптер или строку через специальное поле
+const prisma = new PrismaClient({
+  // @ts-ignore
+  adapter: null,
+  // @ts-ignore
+  errorFormat: 'pretty',
+  // Передаем URL напрямую в обход старых структур
+  // @ts-ignore
+  datasourceUrl: process.env.POSTGRES_URL_NON_POOLING,
+} as any);
 
 async function main() {
   console.log('🌱 Начинается заполнение базы данных...');
