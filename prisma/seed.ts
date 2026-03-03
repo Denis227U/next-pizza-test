@@ -1,17 +1,23 @@
 import 'dotenv/config';
 import { PrismaClient } from '../app/generated/prisma/client';
 import { hashSync } from 'bcrypt';
+import pg from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 export const UserRole = {
   USER: 'USER',
   ADMIN: 'ADMIN',
 } as const;
 
-const prisma = new PrismaClient({
-  adapter: {
-    url: process.env.DATABASE_URL,
-  },
-} as any);
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// 2. Обертываем его в адаптер Prisma
+const adapter = new PrismaPg(pool);
+
+// 3. Передаем адаптер в конструктор (используем as any для обхода типов Prisma 7)
+const prisma = new PrismaClient({ adapter } as any);
 
 async function main() {
   console.log('🌱 Начинается заполнение базы данных...');
