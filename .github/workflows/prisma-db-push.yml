@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # или ваша версия node
+          node-version: '20' # у себя в проекте использую 20-ю версию
           cache: 'npm'
 
       - name: Install dependencies
@@ -27,4 +27,9 @@ jobs:
         run: npx prisma db push --accept-data-loss
         env:
           # GitHub подставит секрет из настроек в переменную окружения
+          DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
+
+      - name: Seed Database
+        run: npx prisma db seed
+        env:
           DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
