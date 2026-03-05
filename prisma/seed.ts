@@ -2,7 +2,14 @@ import 'dotenv/config';
 import { Prisma, PrismaClient } from '../app/generated/prisma/client';
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { categories, ingredients, products, users } from './constants';
+import {
+  cartItems,
+  carts,
+  categories,
+  ingredients,
+  products,
+  users,
+} from './constants';
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -159,6 +166,16 @@ async function main() {
       generateProductItem({ productId: 17 }),
     ],
   });
+
+  console.log('Генерация корзин...');
+  for (const cart of carts) {
+    await prisma.cart.create({ data: cart });
+  }
+
+  console.log('Генерация товаров для корзины...');
+  for (const cartItem of cartItems) {
+    await prisma.cartItem.create({ data: cartItem });
+  }
 
   console.log('✅ База данных успешно заполнена!');
 }
