@@ -2,14 +2,7 @@ import 'dotenv/config';
 import { Prisma, PrismaClient } from '../app/generated/prisma/client';
 import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import {
-  cartItems,
-  carts,
-  categories,
-  ingredients,
-  products,
-  users,
-} from './constants';
+import { carts, categories, ingredients, products, users } from './constants';
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -47,8 +40,8 @@ async function main() {
   // Трюк для PostgreSQL: очищаем все таблицы одной командой и сбрасываем счетчики ID
   // Очищаем таблицы в порядке, который не нарушает Foreign Key constraints
   // Сначала связующие таблицы и корзины
-  // Очистка всех таблиц, кроме таблицы User
   await prisma.$executeRaw`TRUNCATE TABLE
+    "User",
     "CartItem",
     "Cart",
     "Order",
@@ -69,12 +62,19 @@ async function main() {
   }
 
   console.log('Генерация пользоватеелй...');
+  // for (const user of users) {
+  //   await prisma.user.upsert({
+  //     where: { email: user.email },
+  //     update: {}, // Если пользователь найден, ничего не меняем
+  //     create: user,
+  //   });
+  // }
+  const createdUsers = [];
   for (const user of users) {
-    await prisma.user.upsert({
-      where: { email: user.email },
-      update: {}, // Если пользователь найден, ничего не меняем
-      create: user,
+    const dbUser = await prisma.user.create({
+      data: user,
     });
+    createdUsers.push(dbUser);
   }
 
   console.log('Генерация ингредиентов...');
@@ -168,14 +168,35 @@ async function main() {
   });
 
   console.log('Генерация корзин...');
-  for (const cart of carts) {
-    await prisma.cart.create({ data: cart });
+  // for (const cart of carts) {
+  //   await prisma.cart.create({ data: cart });
+  // }
+  for (let i = 0; i < carts.length; i++) {
+    await prisma.cart.create({
+      data: {
+        userId: createdUsers[i].id, // Берем ID из базы!
+        token: carts[i]?.token || `token-${createdUsers[i].id}`,
+        totalAmount: carts[i]?.totalAmount || 0,
+      },
+    });
   }
 
   console.log('Генерация товаров для корзины...');
-  for (const cartItem of cartItems) {
-    await prisma.cartItem.create({ data: cartItem });
-  }
+  // for (const cartItem of cartItems) {
+  //   await prisma.cartItem.create({ data: cartItem });
+  // }
+  const dbFirstCart = await prisma.cart.findFirst();
+  const dbProductFirstItem = await prisma.productItem.findFirst();
+  await prisma.cartItem.create({
+    data: {
+      productItemId: dbProductFirstItem?.id ?? 1,
+      cartId: dbFirstCart?.id ?? 1,
+      quantity: 2,
+      ingredients: {
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+  });
 
   console.log('✅ База данных успешно заполнена!');
 }

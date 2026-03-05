@@ -283,14 +283,3 @@ export const carts = [
     token: '222222',
   },
 ];
-
-export const cartItems = [
-  {
-    productItemId: 1,
-    cartId: 1,
-    quantity: 2,
-    ingredients: {
-      connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
-    },
-  },
-];
